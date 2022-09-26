@@ -12,7 +12,7 @@ func main() {
 	home := os.Getenv("HOME")
 
 	// Make $HOME available on a mount dir under /tmp/ . Caution:
-	// write operations are also mirrored.
+	// write operations are lso mirrore
 	root, err := fs.NewLoopbackRoot(home)
 	if err != nil {
 		log.Fatal(err)
