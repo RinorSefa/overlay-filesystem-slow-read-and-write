@@ -206,7 +206,7 @@ var _ = (NodeCreater)((*LoopbackNode)(nil))
 func (n *LoopbackNode) Create(ctx context.Context, name string, flags uint32, mode uint32, out *fuse.EntryOut) (inode *Inode, fh FileHandle, fuseFlags uint32, errno syscall.Errno) {
 	p := filepath.Join(n.path(), name)
 	flags = flags &^ syscall.O_APPEND
-	fd, err := syscall.Open(p, int(flags)|os.O_CREATE, mode)
+	fd, err := syscall.Open(p, int(flags)|os.O_CREATE|os.O_SYNC, mode)
 	if err != nil {
 		return nil, nil, 0, ToErrno(err)
 	}
@@ -222,7 +222,7 @@ func (n *LoopbackNode) Create(ctx context.Context, name string, flags uint32, mo
 	lf := NewLoopbackFile(fd)
 
 	out.FromStat(&st)
-	return ch, lf, 0, 0
+	return ch, lf, fuse.FOPEN_DIRECT_IO, 0
 }
 
 func (n *LoopbackNode) Symlink(ctx context.Context, target, name string, out *fuse.EntryOut) (*Inode, syscall.Errno) {
@@ -282,12 +282,14 @@ func (n *LoopbackNode) Readlink(ctx context.Context) ([]byte, syscall.Errno) {
 func (n *LoopbackNode) Open(ctx context.Context, flags uint32) (fh FileHandle, fuseFlags uint32, errno syscall.Errno) {
 	flags = flags &^ syscall.O_APPEND
 	p := n.path()
-	f, err := syscall.Open(p, int(flags), 0)
+	// our code
+	f, err := syscall.Open(p, int(flags)|os.O_SYNC, 0)
 	if err != nil {
 		return nil, 0, ToErrno(err)
 	}
 	lf := NewLoopbackFile(f)
-	return lf, 0, 0
+	// our code
+	return lf, fuse.FOPEN_DIRECT_IO, 0
 }
 
 func (n *LoopbackNode) Opendir(ctx context.Context) syscall.Errno {
