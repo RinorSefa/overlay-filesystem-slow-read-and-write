@@ -283,7 +283,7 @@ func (n *LoopbackNode) Open(ctx context.Context, flags uint32) (fh FileHandle, f
 	flags = flags &^ syscall.O_APPEND
 	p := n.path()
 	// our code
-	f, err := syscall.Open(p, int(flags)|os.O_SYNC, 0)
+	f, err := syscall.Open(p, int(flags)|syscall.O_SYNC|syscall.O_DIRECT, 0)
 	if err != nil {
 		return nil, 0, ToErrno(err)
 	}

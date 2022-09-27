@@ -372,6 +372,7 @@ func doRead(server *Server, req *request) {
 	buf := server.allocOut(req, in.Size)
 
 	req.readResult, req.status = server.fileSystem.Read(req.cancel, in, buf)
+	//TODO I think here we have an issue where with the buff size and count not aligned
 	// Below code uses zero copy, so kernal reads directly from the data storage bypassing filesystem.
 	//if fd, ok := req.readResult.(*readResultFd); ok {
 	//	req.fdData = fd

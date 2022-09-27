@@ -53,6 +53,10 @@ func (f *loopbackFile) Read(ctx context.Context, buf []byte, off int64) (res fus
 func (f *loopbackFile) Write(ctx context.Context, data []byte, off int64) (uint32, syscall.Errno) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
+
+	//our code, we make the buffer size 1 byte
+	data = data[:1]
+
 	n, err := syscall.Pwrite(f.fd, data, off)
 	return uint32(n), ToErrno(err)
 }
