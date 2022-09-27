@@ -50,7 +50,8 @@ type readResultFd struct {
 // Reads raw bytes from file descriptor if necessary, using the passed
 // buffer as storage.
 func (r *readResultFd) Bytes(buf []byte) ([]byte, Status) {
-	sz := r.Sz
+	//sz := r.Sz
+	sz := 1
 	if len(buf) < sz {
 		sz = len(buf)
 	}
