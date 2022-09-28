@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -10,10 +11,11 @@ import (
 
 func main() {
 	home := os.Getenv("HOME")
+	mntDir, _ := ioutil.TempDir("", "")
 
 	// Make $HOME available on a mount dir under /tmp/ . Caution:
 	// write operations are lso mirrore
-	root, err := fs.NewLoopbackRoot(home)
+	root, err := fs.NewLoopbackRoot(mntDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,7 +31,7 @@ func main() {
 	}
 
 	// Mount the file system
-	server, err := fs.Mount(".", root, mountOpts)
+	server, err := fs.Mount(home+"/Desktop", root, mountOpts)
 	if err != nil {
 		log.Fatal(err)
 	}
