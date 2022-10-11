@@ -13,6 +13,9 @@ func main() {
 	home := os.Getenv("HOME")
 	mntDir, _ := ioutil.TempDir("", "")
 
+	////mount to an existing directory, to import threat0
+	//mntDir := home + "/documents"
+
 	// Make $HOME available on a mount dir under /tmp/ . Caution:
 	// write operations are lso mirrore
 	root, err := fs.NewLoopbackRoot(mntDir)
@@ -27,6 +30,7 @@ func main() {
 			MaxReadAhead:  10,
 			SyncRead:      true,
 			MaxBackground: 1,
+			AllowOther:    true,
 		},
 	}
 

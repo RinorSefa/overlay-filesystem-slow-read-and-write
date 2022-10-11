@@ -203,6 +203,7 @@ func (n *LoopbackNode) Rename(ctx context.Context, name string, newParent InodeE
 
 var _ = (NodeCreater)((*LoopbackNode)(nil))
 
+// Modified by @RinorSefa
 func (n *LoopbackNode) Create(ctx context.Context, name string, flags uint32, mode uint32, out *fuse.EntryOut) (inode *Inode, fh FileHandle, fuseFlags uint32, errno syscall.Errno) {
 	p := filepath.Join(n.path(), name)
 	flags = flags &^ syscall.O_APPEND
@@ -279,17 +280,20 @@ func (n *LoopbackNode) Readlink(ctx context.Context) ([]byte, syscall.Errno) {
 	}
 }
 
+// Modified by @RinorSefa
 func (n *LoopbackNode) Open(ctx context.Context, flags uint32) (fh FileHandle, fuseFlags uint32, errno syscall.Errno) {
-	flags = flags &^ syscall.O_APPEND
+	flags = flags&^syscall.O_APPEND | syscall.O_SYNC
 	p := n.path()
 	// our code
-	f, err := syscall.Open(p, int(flags)|syscall.O_SYNC|syscall.O_DIRECT, 0)
+	f, err := syscall.Open(p, int(flags), 0)
 	if err != nil {
 		return nil, 0, ToErrno(err)
 	}
 	lf := NewLoopbackFile(f)
 	// our code
-	return lf, fuse.FOPEN_DIRECT_IO, 0
+
+	//return lf, fuse.FOPEN_DIRECT_IO, 0
+	return lf, 0, 0
 }
 
 func (n *LoopbackNode) Opendir(ctx context.Context) syscall.Errno {

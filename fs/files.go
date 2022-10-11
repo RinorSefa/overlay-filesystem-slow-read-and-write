@@ -50,6 +50,7 @@ func (f *loopbackFile) Read(ctx context.Context, buf []byte, off int64) (res fus
 	return r, OK
 }
 
+// Modified by @RinorSefa
 func (f *loopbackFile) Write(ctx context.Context, data []byte, off int64) (uint32, syscall.Errno) {
 	f.mu.Lock()
 	defer f.mu.Unlock()

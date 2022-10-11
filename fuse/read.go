@@ -47,6 +47,7 @@ type readResultFd struct {
 	Sz int
 }
 
+// Modified by @RinorSefa
 // Reads raw bytes from file descriptor if necessary, using the passed
 // buffer as storage.
 func (r *readResultFd) Bytes(buf []byte) ([]byte, Status) {
